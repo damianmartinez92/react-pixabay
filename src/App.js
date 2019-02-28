@@ -1,28 +1,46 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+//FUNCIONALES
+import React, { Component } from 'react'
 
-class App extends Component {
+//COMPONENTES
+import Buscador from './components/Buscador'
+import Resultado from './components/Resultado'
+
+
+export default class App extends Component {
+  state = {
+    termino: '',
+    imagenes: []
+  }
+
+  consultarApi = () => {
+    const url = `https://pixabay.com/api/?key=11751353-09eb9c33121cfa4d6c662ec50&q=${this.state.termino}`;
+
+    fetch(url)
+      .then(respuesta => respuesta.json())
+      .then(resultado => this.setState({ imagenes: resultado.hits }))  
+  }
+
+  datosBusqueda = termino => {
+    this.setState({
+      termino
+    }, () => {
+      this.consultarApi()
+    })
+  }
+
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+      <div className="app container">
+        <div className="jumbotron">
+            <p className="lead text-center">Buscador de imágenes</p>
+            <Buscador
+              datosBusqueda={this.datosBusqueda}  
+            />
+            <Resultado 
+              imagenes={this.state.imagenes} 
+            />
+        </div>
       </div>
-    );
+    )
   }
 }
-
-export default App;
